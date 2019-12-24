@@ -1,5 +1,10 @@
 # Date Group
-Group a directory of files
+Group a directory of files.
+
+Dates are determined through multiple sources:
+
+- EXIF metadata
+- Date in filename
 
 ## Installation
 
