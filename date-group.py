@@ -60,11 +60,10 @@ def main():
     logging.info("Discovering files...")
     files = list(iter_files(root))
     logging.info("Discovered %d files.", len(files))
-    failed_paths = []
     for path in tqdm(files):
         date = get_date_for_file(path)
         if not date:
-            failed_paths.append(path)
+            logging.warning("Failed to parse date from file %s", path.relative_to(root))
             continue
         date_subdir = path.parent.joinpath(date.strftime("%Y/%B"))
         dest = date_subdir.joinpath(path.name)
@@ -73,9 +72,6 @@ def main():
         else:
             date_subdir.mkdir(parents=True, exist_ok=True)
             shutil.move(path, dest)
-
-    for path in failed_paths:
-        logging.warning("Failed to parse %s", path.relative_to(root))
 
 
 if __name__ == "__main__":
