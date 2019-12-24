@@ -1,2 +1,2 @@
-# date-group
+# Date Group
 Group a directory of files
