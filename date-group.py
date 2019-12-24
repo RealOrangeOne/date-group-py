@@ -1,6 +1,7 @@
 import argparse
 import datetime
 import logging
+import shutil
 from pathlib import Path
 
 import exifread
@@ -64,6 +65,10 @@ def main():
         if not date:
             failed_paths.append(path)
             continue
+        date_subdir = path.parent.joinpath(date.strftime("%Y/%B"))
+        date_subdir.mkdir(parents=True, exist_ok=True)
+        shutil.move(path, date_subdir.joinpath(path.name))
+
     for path in failed_paths:
         logging.warning("Failed to parse %s", path.relative_to(root))
 
