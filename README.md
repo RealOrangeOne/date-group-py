@@ -1,6 +1,8 @@
 # Date Group
 Group a directory of files.
 
+![](https://github.com/RealOrangeOne/date-group/workflows/Build/badge.svg)
+
 Dates are determined through multiple sources:
 
 - EXIF metadata
