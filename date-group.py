@@ -13,6 +13,7 @@ from tqdm import tqdm
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("path", type=Path)
+    parser.add_argument("--dry-run", action="store_true")
     return parser.parse_args()
 
 
@@ -66,8 +67,12 @@ def main():
             failed_paths.append(path)
             continue
         date_subdir = path.parent.joinpath(date.strftime("%Y/%B"))
-        date_subdir.mkdir(parents=True, exist_ok=True)
-        shutil.move(path, date_subdir.joinpath(path.name))
+        dest = date_subdir.joinpath(path.name)
+        if args.dry_run:
+            logging.info("%s -> %s", path.relative_to(root), dest.relative_to(root))
+        else:
+            date_subdir.mkdir(parents=True, exist_ok=True)
+            shutil.move(path, dest)
 
     for path in failed_paths:
         logging.warning("Failed to parse %s", path.relative_to(root))
