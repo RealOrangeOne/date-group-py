@@ -6,10 +6,11 @@ import logging
 import shutil
 from pathlib import Path
 
+import coloredlogs
+import enlighten
 import exifread
 from dateutil.parser import parse as parse_datetime
 from dateutil.parser._parser import ParserError
-from tqdm import tqdm
 
 
 def get_args():
@@ -51,9 +52,9 @@ def get_date_for_file(path: Path):
 
 
 def main():
-    logging.basicConfig(
+    coloredlogs.install(
         level=logging.INFO,
-        format="%(asctime)s %(levelname)s \t %(message)s",
+        fmt="%(asctime)s %(levelname)s %(message)s",
         datefmt="%H:%M:%S",
     )
     args = get_args()
@@ -62,16 +63,18 @@ def main():
     logging.info("Discovering files...")
     files = list(iter_files(root))
     logging.info("Discovered %d files.", len(files))
-    for path in tqdm(files):
+    pbar = enlighten.Manager().counter(total=len(files))
+    errors = pbar.add_subcounter("red")
+    for path in pbar(files):
         date = get_date_for_file(path)
         if not date:
-            logging.warning("Failed to parse date from file %s", path.relative_to(root))
+            logging.error("Failed to parse date from file %s", path.relative_to(root))
+            errors.update()
             continue
         date_subdir = path.parent.joinpath(date.strftime("%Y/%B"))
         dest = date_subdir.joinpath(path.name)
-        if args.dry_run:
-            logging.info("%s -> %s", path.relative_to(root), dest.relative_to(root))
-        else:
+        logging.info("%s -> %s", path.relative_to(root), dest.relative_to(root))
+        if not args.dry_run:
             date_subdir.mkdir(parents=True, exist_ok=True)
             shutil.move(path, dest)
 
