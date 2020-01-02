@@ -71,7 +71,7 @@ def main():
             logging.error("Failed to parse date from file %s", path.relative_to(root))
             errors.update()
             continue
-        date_subdir = path.parent.joinpath(date.strftime("%Y/%B"))
+        date_subdir = root.joinpath(date.strftime("%Y/%B"))
         dest = date_subdir.joinpath(path.name)
         logging.info("%s -> %s", path.relative_to(root), dest.relative_to(root))
         if not args.dry_run:
