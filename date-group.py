@@ -65,6 +65,7 @@ def main():
     logging.info("Discovered %d files.", len(files))
     pbar = enlighten.Manager().counter(total=len(files))
     errors = pbar.add_subcounter("red")
+    already_in_place = pbar.add_subcounter("green")
     for path in pbar(files):
         date = get_date_for_file(path)
         if not date:
@@ -73,6 +74,11 @@ def main():
             continue
         date_subdir = root.joinpath(date.strftime("%Y/%B"))
         dest = date_subdir.joinpath(path.name)
+
+        if dest == path:
+            already_in_place.update()
+            continue
+
         logging.info("%s -> %s", path.relative_to(root), dest.relative_to(root))
         if not args.dry_run:
             date_subdir.mkdir(parents=True, exist_ok=True)
