@@ -13,10 +13,18 @@ from dateutil.parser import parse as parse_datetime
 from dateutil.parser._parser import ParserError
 
 
+def validate_date_format(date_format: str):
+    if "%" not in date_format:
+        raise argparse.ArgumentTypeError("Format doesn't look like a date format")
+    datetime.datetime.now().strftime(date_format)
+    return date_format
+
+
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("path", type=Path)
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--format", type=validate_date_format, default="%Y/%B")
     return parser.parse_args()
 
 
@@ -72,7 +80,7 @@ def main():
             logging.error("Failed to parse date from file %s", path.relative_to(root))
             errors.update()
             continue
-        date_subdir = root.joinpath(date.strftime("%Y/%B"))
+        date_subdir = root.joinpath(date.strftime(args.format))
         dest = date_subdir.joinpath(path.name)
 
         if dest == path:
