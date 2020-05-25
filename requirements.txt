@@ -1,4 +1,4 @@
 exifread==2.1.2
 python-dateutil==2.8.1
-enlighten==1.5.1
+enlighten==1.5.2
 coloredlogs==14.0
