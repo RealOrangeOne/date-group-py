@@ -1,7 +1,10 @@
 # Date Group
+
 Group a directory of files.
 
-![](https://github.com/RealOrangeOne/date-group/workflows/Build/badge.svg)
+![](https://github.com/RealOrangeOne/date-group-py/workflows/Build/badge.svg)
+
+Want a more performant version. Check out the [Rust](https://github.com/RealOrangeOne/date-group) version.
 
 Dates are determined through multiple sources:
 
